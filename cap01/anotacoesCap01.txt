@@ -1,0 +1,32 @@
+No exemplo do livro, a função main que deve mostrar "hello, world" não está acompanhada do tipo de retorno e também não retorna nada, isso não deve compilar (pelo menos não com o compilador gcc que estou usando). Eu testei e obtive um warning dizendo que o tipo de retorno é, por padrão, o 'int' (não informa precisamente se é um int 32 bits ou 16 bits).
+O compilador gerou um .exe mesmo sem escrever o retorno, mas eu não executei. Eu voltei ao código e reescrevi a função, mas com um retorno void e funcionou perfeitamente e sem alertas, porém, embora o executável tenha funcionado normalmente, o vs code afirma que ele falhou, provavelmente porque o padrão diz que ele deve retornar um int e que o retorno deve ser 0 para sucesso. 
+
+O livro afirma que programas em C consistem em variáveis e funções. 
+Funções possuem "statements" que determinam as operações que devem ser feitas.
+Variáveis guardam valores usados durante a computação. Com base em outras fontes, variáveis possuem três componentes principais que as definem: tipo de dado; valor; nome. Esses três valores são o suficiente para que um programador consiga defini-las. Onde elas são armazenas ainda é um mistério, mas logo eu vou entender melhor sobre onde e como elas são armazenadas e quem armazena elas.
+
+Temos liberdade para nomear funções, porém, a função main é uma função especial, e o compilador vai considera-la como um ponto de partida para o programa que estamos escrevendo. 
+Outras funções normalmente servem como auxiliares para a função main, ou seja, a main, assim como qualquer outra função, pode chamar outras funções. 
+
+No início do programa escrevemos "#include <stdio.h>". Essa linha diz ao compilador para adicionar as informações do arquivo stdio.h no programa que estamos escrevendo. O nome stdio pode ser visto como uma abreviação para standard input output, ou seja, um arquivo padrão que nos dá recursos para trabalhar com input e output. Ainda não sei se esse i/o abrange manipulação de arquivos do sistema, como escrever, ler, criar e deletar arquivos ou se lida apenas com input e output do usuário. Em breve saberemos. 
+A extensão .h é usada para arquivos header como o stdio.h. Podemos também criar um arquivo como esse para modular o nosso código.
+
+O livro diz, explicitamente, que todos os programas em C devem ter uma função main. Isso é curioso, porque eu ACHO que em C# é possível alterar o início do programa, então imagino que deve existir uma forma de fazer isso em C também, não que exista alguma necessidade de fazer algo assim...
+
+---------------------------------------------------------------------------------
+
+Se queremos usar o console para ver mensagens com o printf, é uma boa ideia usar o caractere de nova linha \n, pois o printf não adiciona uma nova linha quando é chamado, fazendo com que todas as chamadas prinft, e de input também, fiquem aglutinadas em uma única linha.
+
+Existem vários caracteres "invisíveis" além do \n, um exemplo é o \" para ". 
+
+---------------------------------------------------------------------------------
+
+Exercício
+
+Para as temperaturas de 20 até 300 °F (de 20 em 20), contruir uma tabela que mostre o valor em °C correspondente a cada uma das temperaturas.
+
+Sobre a solução:  vou fazer duas soluções, uma seguindo, mais ou menos, o livro e outra de forma recursiva. Vou implementar também uma função para formatar a tabela.
+
+Percebi que C é muito sensível a ordem como fazemos as contas. Provavelmente isso ocorre porque quando uma divisão fica muito próxima de zero, ele trunca o resultado para 0. O estranho é que eu usei o tipo float para evitar esse problema, mas mesmo assim, não pude fazer o exercício com a expressão C = (5/9) * (F - 32), apenas com 5*(F - 32)/9, que são matematicamente equivalentes, mas a ordem seguida pelo compilador, aparentemente é diferente para as duas expressões.
+
+Porém, ambas as abordagens foram bem sucedidas (com for e recursivamente). O livro resolve com while.

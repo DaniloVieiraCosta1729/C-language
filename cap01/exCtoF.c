@@ -39,9 +39,9 @@ int tableFtoCRecursively(float initial, float final, float rate)
 
     float C = 5*(initial-32)/9;
 
-    printf("%f F", initial);
+    printf("%.2f F", initial);
     printf("\t\t\t"); // só pra ficar diferente do anterior, vou usar o caractere \t.
-    printf("%f C\n", C);
+    printf("%.2f C\n", C);
 
     return tableFtoCRecursively(initial + rate, final, rate);   
 }

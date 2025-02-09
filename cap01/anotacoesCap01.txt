@@ -30,3 +30,7 @@ Sobre a solução:  vou fazer duas soluções, uma seguindo, mais ou menos, o li
 Percebi que C é muito sensível a ordem como fazemos as contas. Provavelmente isso ocorre porque quando uma divisão fica muito próxima de zero, ele trunca o resultado para 0. O estranho é que eu usei o tipo float para evitar esse problema, mas mesmo assim, não pude fazer o exercício com a expressão C = (5/9) * (F - 32), apenas com 5*(F - 32)/9, que são matematicamente equivalentes, mas a ordem seguida pelo compilador, aparentemente é diferente para as duas expressões.
 
 Porém, ambas as abordagens foram bem sucedidas (com for e recursivamente). O livro resolve com while.
+
+Descobri que mesmo declarando C como float, eu devo usar a fração 5.0/9.0 (pelo menos um deles deve ser escrito explicitamente como ponto flutuante) ao invés de 5/9. Por isso o compilador estava truncando para 0. Quando escrevi 5/9, ele primeiro fez a operação entre inteiros e depois converteu o resultado para float. 
+
+Melhorando a exibição: podemos usar %.2f para especificar que queremos mostras apenas 2 casas decimais.

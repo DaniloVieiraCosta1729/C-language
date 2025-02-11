@@ -34,3 +34,9 @@ Porém, ambas as abordagens foram bem sucedidas (com for e recursivamente). O li
 Descobri que mesmo declarando C como float, eu devo usar a fração 5.0/9.0 (pelo menos um deles deve ser escrito explicitamente como ponto flutuante) ao invés de 5/9. Por isso o compilador estava truncando para 0. Quando escrevi 5/9, ele primeiro fez a operação entre inteiros e depois converteu o resultado para float. 
 
 Melhorando a exibição: podemos usar %.2f para especificar que queremos mostras apenas 2 casas decimais.
+
+---------------------------------------------------------------------------------
+
+No exercício sobre conversão de temperaturas, usamos números arbitrários para o step (rate), inital e final. Isso afeta a leitura do código no futuro, pois não temos garantia de que lembraremos porquê tais números foram usados. Isso é ainda mais grave se outras pessoas precisarem ler/refatorar o código.
+Para resolver esse problema, temos um recurso chamado #define. Com o #define podemos nomear dados importantes, assim como fazemos com variáveis. 
+O uso de #define não é restrito à números, mas é uma aplicação muito comum usarmos ele para definir constantes no código. 

@@ -21,9 +21,30 @@ void table()
     }
 }
 
+// Vamos modificar a função table() para usarmos o #define para lidar com esses números soltos (step, initial e final). 
+
+void tableWithDefine()
+{
+    #define step 20
+    #define lowest 0
+    #define highest 300  // não tem ; por algum motivo....
+
+    float F, C;
+
+    printf("C\t\tF");
+
+    for(F = highest; F >= lowest; F -= step)
+    {
+        C = (5.0/9.0)*(F-32);
+        printf("\n%6.2f\t\t%6.2f", F, C);
+    }
+    
+}
+
 int main()
 {
-    table();
+    //table();
+    tableWithDefine();
 
     return 0;
 }

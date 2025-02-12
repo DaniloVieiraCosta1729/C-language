@@ -40,3 +40,16 @@ Melhorando a exibição: podemos usar %.2f para especificar que queremos mostras
 No exercício sobre conversão de temperaturas, usamos números arbitrários para o step (rate), inital e final. Isso afeta a leitura do código no futuro, pois não temos garantia de que lembraremos porquê tais números foram usados. Isso é ainda mais grave se outras pessoas precisarem ler/refatorar o código.
 Para resolver esse problema, temos um recurso chamado #define. Com o #define podemos nomear dados importantes, assim como fazemos com variáveis. 
 O uso de #define não é restrito à números, mas é uma aplicação muito comum usarmos ele para definir constantes no código. 
+
+---------------------------------------------------------------------------------
+
+Stream
+
+Segundo o livro, programas de modo geral podem ser vistos como casos expandidos de pequenos programa que serão tratados na seção 1.5. 
+Esses pequenos programas se baseam em input/output de caracteres usando o cabeçalho stdio.h.
+
+Na programação e computação de modo geral, o conceito de stream (transmissão ou fluxo) ajuda a abstratir a transmissão de dados. Tanto o input quanto o output, independenmente de onde vêm ou pra onde vai (contextos diversos: conexão TCP, uma leitura de arquivo etc.) é lidada em C (no caso do stdio.h) como um stream de caractéres. 
+Um stream de texto é uma sequência de caracteres em linhas, em que uma linha possuí zero ou mais caracteres e, se a linha não for a última, ela tem um caractere de nova linha no fim.
+
+Existem várias funções que permitem ler e escrever caracteres, mas as mais simples são o getchar e putchar que, respectivamente, lê o próximo caractere e exibe o caractere.
+

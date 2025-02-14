@@ -28,7 +28,7 @@ int main()
         
         printf("O caracter foi adicionado ao banco.\n");
 
-        // parece que o \n está sendo contado tbm...
+        // parece que o \n está sendo contado tbm... (comento mais a respeito disso na anotação)
     }
     */
 

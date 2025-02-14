@@ -53,3 +53,9 @@ Um stream de texto é uma sequência de caracteres em linhas, em que uma linha p
 
 Existem várias funções que permitem ler e escrever caracteres, mas as mais simples são o getchar e putchar que, respectivamente, lê o próximo caractere e exibe o caractere.
 
+Ao fazer um programa que pede caracteres sucessivamente e, ao receber EOF, retorna o número de caracteres digitados, houveram 2 problemas:
+1º - printf final não estava mostrando a mensagem por completo. 
+2º - o contador de caracteres estava com o valor dobrado.
+
+Para ambos os problemas, a raiz consiste no buffer. Buffer, aparentemente é uma região da memória em que o OS guarda os dados de input e output. Então, quando eu digito algo e aperto enter, isso não é levado imediatamente ao programa, mas sim ao buffer stdin e de lá ele será enviado ao programa. Quando eu digito 'x' e aperto enter, eu estou enviando dois caracteres, o 'x' e o '\n', o programa leu ambos no buffer e contabilizou ambos. Para resolver, bastou colocar uma condição antes da contagem para ignorar entradas de '\n'.
+Já no primeiro problema, acontece que eu estava enviando o EOF a partir do encerramento do programa, i.e, com ctrl+c. Isso fazia com que os dados no buffer stdout não conseguissem chegar a tempo no programa. A solução foi enviar o EOF com ctrl+z + enter, pois isso envia o EOF e não encerra o programa, permitindo o fluxo normal de dados do buffer para o programa.

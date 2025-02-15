@@ -33,7 +33,7 @@ int main()
             blankstatus = 0;
         }
         
-        fullText[currentTextLength++] = currentCharacter;
+        fullText[currentTextLength++] = currentCharacter; // atribui currentCharacter à posição currentTextLength e depois soma 1 ao currentTextLength.
         
 
         /*

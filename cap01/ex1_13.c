@@ -36,7 +36,7 @@ int main()
             continue;
         }
         
-        printf("%d-th: %d\n", i, words[i]);
+        printf("%d-th: %d\n", (i + 1), words[i]);
     }
     
 

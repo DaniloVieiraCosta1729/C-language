@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <limits.h>
+#include <float.h>
+#include <complex.h>
 
 int main()
 {
@@ -8,7 +10,18 @@ int main()
 
     long int a = INT_MAX;
 
-    printf("%ld",a + 4000);
+    long double b = LDBL_MAX;
+
+    printf("%ld \n",a + 4000);
+    printf("b = %Lg \n", b);
+
+    double _Complex c = 0.0 + 1.0*I;
+    double _Complex d = 2.0 + 1.0*I;
+    double _Complex e = c*d;
+
+    printf("c = %.2f + %.2fi\n", creal(c), cimag(c));
+    printf("d = %.2f + %.2fi\n", creal(d), cimag(d));
+    printf("A rotacao do vetor (2, 1) em 90 graus eh (%.2f , %.2f)", creal(e), cimag(e));
 
     // O resultado mostrado foi -2147479649
     // Ou seja, a soma de dois números positivos é igual à um número negativo!

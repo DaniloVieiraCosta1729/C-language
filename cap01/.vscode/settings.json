@@ -1,6 +1,7 @@
 {
     "files.associations": {
         ".fantomasignore": "ignore",
-        "streamIO.C": "cpp"
+        "streamIO.C": "cpp",
+        "complex.h": "c"
     }
 }

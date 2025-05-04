@@ -62,3 +62,14 @@ Já no primeiro problema, acontece que eu estava enviando o EOF a partir do ence
 
 Com um artigo do geeksforgeeks + livro + gpt eu acredito que consegui enter bem o que o livro quis passar com esse exercício. 
 Quando um dado, como uma mensagem, não está pronta ainda para ser transferida, ela fica em um buffer, por exemplo, suponha que queremos colocar a palavra "moto" como input: se não tivessemos um buffer, ao pressionar o 'm' ele automaticamente seria entendido como a mensagem à ser enviada. O que o buffer faz é guardar os caracteres até que a mensagem esteja pronta para ser enviada. Assim, ele guardará 'm' 'o' 't' 'o' '\n'. O '\n' indica que a linha terminou e que, portando, a mensagem está pronta para ser enviada.
+
+---------------------------------------------------------------------------------
+
+Funções em C, por padrão, não alteram o valor das variáveis que são passadas como argumento, ou seja, as variáveis são passadas por valor e não por referência. 
+
+Se quisermos passar um parâmetro por referência, devemos fornecer o ponteiro para o endereço da variável que queremos passar por referência, ao invés de passar o nome da variável. Além disso, a assinatura do método deve informar que o parâmetro é um ponteiro.
+
+Uma observação importante é que arrays são sempre passados por referência. Quando colocamos o nome de um array na chamada de uma função, o que a função realmente pega é o endereço do início do array. (fazendo uma pesquisa, descobri que o termo 'passagem por referência' não é tecnicamento correto, pois não estamos passando o próprio array, mas sim, um ponteiro para o primeiro elemento. O efeito é muito semelhante, mas são coisas distinstas mesmo assim.)
+
+
+

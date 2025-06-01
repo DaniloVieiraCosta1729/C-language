@@ -1,38 +1,28 @@
 #include <stdio.h>
 
-#define MAXLENGTH 50001
+#define MAXTEXT 100
 
-int contador(char* s, int i)
+int main(int argc, char const *argv[])
 {
-    int contagem = 1;
+    char c;
+    int largest = 0;
+    int size = 0;
 
-    for (int k = i - 1; (k >= 0) && (s[k] != s[i]); k--)
+    while (((c = getchar()) != EOF))
     {
-        contagem++;
-    }
-
-    return contagem;
-}
-
-int tamanhoMaiorSubstring(char* s)
-{
-    int resultado = 1;
-    int c;
-
-    for (int i = 1; (i < MAXLENGTH) && (s[i] == '\0'); i++)
-    {
-        c = contador(s, i);
-        if (resultado < c)
+        size++;
+        if ((c == ' ') || (c == '\n'))
         {
-            resultado = c;
+            if (size > largest)
+            {
+                largest = size;
+            }
+            
+            size = 1;
         }
     }
-    return resultado;
-}
 
-int main()
-{
-    char* c = "abcffhgfgwemf";
-    printf("%d", tamanhoMaiorSubstring(c));
+    printf("Maior palavra: %d", largest - 1);
+    
     return 0;
 }

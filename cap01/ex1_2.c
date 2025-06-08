@@ -2,7 +2,7 @@
 
 int main()
 {
-    printf("Testando o caractere \c");
+    printf("Testando o caractere");
     return 0;
 }
 

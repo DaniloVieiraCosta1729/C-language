@@ -1,0 +1,2 @@
+D:/IT/C/The C programming language/build/CMakeFiles/edit_cache.dir
+D:/IT/C/The C programming language/build/CMakeFiles/rebuild_cache.dir

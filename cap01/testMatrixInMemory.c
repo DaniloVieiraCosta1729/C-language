@@ -10,7 +10,7 @@ int main(int argc, char const *argv[])
     printf("*ptr + 2 = %d\n", *(ptr + 2));
     printf("*ptr + 3 = %d\n", *(ptr + 3));
 
-    printf("*ptr + 8 = %d\n", *(ptr + 8)); // Então é isso. Uma matrix é guardada exatamente como um array em memória. Existe uma distância de 4 bytes entre o início de um elemento e o início do outro. A ordem é m[0][0], m[1,0], ..., m[7,8], m[8,8]
+    printf("*ptr + 8 = %d\n", *(ptr + 8)); // Então é isso. Uma matrix é guardada exatamente como um array em memória. Existe uma distância de 4 bytes entre o início de um elemento e o início do outro. A ordem é m[0][0], m[0,1], ..., m[8,7], m[8,8]
 
     return 0;
 }

@@ -5,15 +5,14 @@
 
 #define sr(x,n) (x >> n) 
 #define LOG2_OF_E 1.4426950408889634
+#define LN2 0.693147180559945309
 #define REMOVE_SIGN 0b011111111111
 #define BIAS 1023
-#define log_2(x) ( (((sr(x,52)) & (REMOVE_SIGN)) - BIAS) / LOG2_OF_E)
+#define log_2(x) ( (((sr(x,52)) & (REMOVE_SIGN)) - BIAS) / LOG2_OF_E) // horrible approximation, it's decent as a guess for newton-raphson, but for calculating the rootsquare, it just doesn't work.
 #define sum_squares(x, y) (x*x + y*y)
 
 int main(int argc, char const *argv[])
 {
-    // using a struct without labeling it.
-
     struct 
     {
         double x;
@@ -22,13 +21,16 @@ int main(int argc, char const *argv[])
         double norm;
     } v1, v2;
 
-    v1.x = 45.2;
-    v1.y = 62.1;
+    v1.x = 2.2;
+    v1.y = 3.1;
     double n = sum_squares(v1.x,v1.y);
 
-    v1.norm = exp( 0.5 * log_2(*(int64_t *)&n)/LOG2_OF_E );
+    v1.norm = exp( 0.5 * log_2(*(int64_t *)&n)*LN2 );
 
-    printf("%lf vs %lf\n", v1.norm, sqrt(sum_squares(v1.x, v1.y)));
+    double test = exp(0.5*log(sum_squares(v1.x, v1.y)));
+
+    printf("%lf vs %lf vs %lf\n", v1.norm, sqrt(sum_squares(v1.x, v1.y)), test);
+    printf("%lf\n",  log_2(*(int64_t *)&n));
 
 
 

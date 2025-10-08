@@ -2,7 +2,7 @@ create table To_do (
     Id integer PRIMARY KEY NOT NULL,
     Titulo varchar(100) NOT NULL,
     Desenho integer  NOT NULL,
-    Imprissao integer NOT NULL,
+    Impressao integer NOT NULL,
     Completo integer NOT NULL
 );
 

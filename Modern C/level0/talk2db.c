@@ -1,8 +1,30 @@
 #include <sqlite3.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #define pulalinha printf("\n");
+
+int callback(void * data, int argc, char ** argv, char ** azColName)
+{
+    char * border = "------------------------------------------------------------------------------\n";
+    
+    for (size_t i = 0; i < argc; i++)
+    {
+        printf("%s",border);
+        printf("%s -> %s\n", azColName[i], i[argv] ? argv[i] : "NULL");
+
+        if ((i+1) % 3 == 0)
+        {
+            printf("%s",border);
+            pulalinha
+            pulalinha            
+        }
+        
+    }
+    
+    return 0;
+}
 
 sqlite3 * modifica_banco();
 int menu(sqlite3 * db);
@@ -71,13 +93,14 @@ int menu(sqlite3 * db)
     
     while (1)
     {
-        printf("Selecione...\n\t\t\t [A]dd  [L]ist  [D]elete  [Q]uite\n>>> \n\n");
+        printf("Selecione...\n\t\t\t [A]dd  [L]ist  [D]elete  [Q]uite\n>>>");
         if ((choice = getchar()) != '\n' && choice != EOF)
         {
             switch (choice)
             {
             case 'a':
             case 'A':
+                system("clear");
                 add(db);
                 break;
 
@@ -87,8 +110,15 @@ int menu(sqlite3 * db)
 
             case 'l':
             case 'L':
+                system("clear");
                 list(db);
-                
+                break;
+            
+            case 'd':
+            case 'D':
+                system("clear");
+                delete(db);
+                break;
             
             default:
                 break;
@@ -127,26 +157,48 @@ int add(sqlite3 * db)
 
     sqlite3_exec(db, sql, NULL, 0, NULL);
 
-    if ((c = getchar()) != '\n' && c != EOF);
-    if ((c = getchar()) != '\n' && c != EOF);
+    while((c = getchar()) != '\n' && c != EOF);
 
     return 0;
 }
 
 int list(sqlite3 * db)
 {
-    sqlite3_exec(db, "select * from clientes;", NULL, 0, NULL);
+    int c;
+    while((c = getchar()) != '\n' && c != EOF);
+    sqlite3_exec(db, "select * from clientes;", callback, 0, NULL);
+    
+
     return 0;
 }
 int delete(sqlite3 * db)
 {
-    char c;
-
+    int c;
     printf("Digite o cpf do cliente que seja excluir\n>>> ");
-    if ((c = getchar()) != )
+   
+    char cpf[11];
+    char sql[256];
+
+    while((c = getchar()) != '\n' && c != EOF);
+
+    fgets(cpf, sizeof(cpf), stdin);
+    (strcspn(cpf, "\n"))[cpf] = '\0';
+
+    snprintf(sql, sizeof(sql), "delete from clientes where cpf = '%s';", cpf);
+
+    printf("Você digitou: %s\n", cpf);
+    
+
+    sqlite3_exec(db, sql, NULL, 0, NULL);
+
+    if (sqlite3_changes(db) == 0)
     {
-        /* code */
+        printf("Nenhuma operacao foi excutada. Verifique se o cpf digitado esta correto.\n");
     }
+
+    printf("Deletado com SUCESSO.\n");
+
+    while((c = getchar()) != '\n' && c != EOF);
     
     return 0;
 }

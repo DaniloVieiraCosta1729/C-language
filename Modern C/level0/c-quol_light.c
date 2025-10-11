@@ -19,7 +19,18 @@ sqlite3 * preparar(){
     
 }
 
-int menu()
+// this enum will be used in our implementation of the actions of our todo app.
+enum ERR {OK, ERROR}; // incrivelmente, essa é a primeira vez que uso enum.
+
+// let's declare first and then define later the functions of this app.
+enum ERR add(sqlite3 *db);
+enum ERR list(sqlite3 *db);
+enum ERR complete(sqlite3 *db);
+enum ERR update(sqlite3 *db);
+enum ERR remove(sqlite3 *db);
+enum ERR quit(sqlite3 *db);
+
+int menu(sqlite3 db)
 {
     printf("================ T E R M I N A L  -- T O D O ================\n\n");
 
@@ -41,6 +52,7 @@ int menu()
             {
             case 'A':
             case 'a':
+                add(&db);
                 printf("New item added.\n");
                 break;
             
@@ -95,4 +107,55 @@ int main(int argc, char const *argv[])
     menu();
 
     return 0;
+}
+
+enum ERR add(sqlite3 *db)
+{
+    char todo[128];
+    char sql[256];
+
+    printf("----- Add task -----\n\t>>> ");
+
+    if (fgets(todo, sizeof(todo), stdin))
+    {
+        *(todo + strcspn(todo, "\n")) = '\0';
+        snprintf(sql, sizeof(sql), "INSERT INTO To_do (Id, Titulo, Desenho, Impressao, Completo) VALUES (NULL, '%s', 0, 0, 0);", todo);
+
+
+        char * errMsg = 0;
+        int r = sqlite3_exec(db, sql, &errMsg);
+
+        if (r != SQLITE_OK)
+        {
+            fprintf(stderr, "error: %s", sqlite3_errmsg(errMsg));
+
+            return ERROR;
+        }
+
+        return OK;
+        
+    }
+    
+
+
+}
+enum ERR list(sqlite3 *db)
+{
+    return OK;
+}
+enum ERR complete(sqlite3 *db)
+{
+    return OK;
+}
+enum ERR update(sqlite3 *db)
+{
+    return OK;
+}
+enum ERR remove(sqlite3 *db)
+{
+    return OK;
+}
+enum ERR quit(sqlite3 *db)
+{
+    return OK;
 }

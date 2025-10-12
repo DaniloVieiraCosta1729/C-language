@@ -5,7 +5,7 @@
 
 #define pulalinha printf("\n");
 
-int callback(void * data, int argc, char ** argv, char ** azColName)
+int listcallback(void * data, int argc, char ** argv, char ** azColName)
 {
     char * border = "------------------------------------------------------------------------------\n";
     
@@ -26,11 +26,18 @@ int callback(void * data, int argc, char ** argv, char ** azColName)
     return 0;
 }
 
+int updatecallback(void * data, int argc, char ** argv, char ** azColName)
+{
+    data->nome = argv[0];
+    return 0;
+}
+
 sqlite3 * modifica_banco();
 int menu(sqlite3 * db);
 int add(sqlite3 * db);
 int list(sqlite3 * db);
 int delete(sqlite3 * db);
+int update(sqlite3 * db);
 
 int main(int argc, char const *argv[])
 {
@@ -110,7 +117,6 @@ int menu(sqlite3 * db)
 
             case 'l':
             case 'L':
-                system("clear");
                 list(db);
                 break;
             
@@ -166,7 +172,7 @@ int list(sqlite3 * db)
 {
     int c;
     while((c = getchar()) != '\n' && c != EOF);
-    sqlite3_exec(db, "select * from clientes;", callback, 0, NULL);
+    sqlite3_exec(db, "select * from clientes;", listcallback, 0, NULL);
     
 
     return 0;
@@ -200,5 +206,43 @@ int delete(sqlite3 * db)
 
     while((c = getchar()) != '\n' && c != EOF);
     
+    return 0;
+}
+
+int update(sqlite3 * db)
+{
+    struct Nome
+    {
+        char * nome;
+    };
+    
+    struct Nome nome;
+
+    char c;
+    printf("Digite o cpf do cliente que deseja modificar.\n\n>>>");
+
+    char cpf[11];
+    char sql[256];
+
+    while((c = getchar()) != '\n' && c != EOF);
+    fgets(cpf, sizeof(cpf), stdin);
+    cpf[strcspn(cpf, "\n")] = '\0';
+
+    printf("Qual campo você deseja modificar?\n[1] Nome\t[2] CPF\t [3] Cancelar\n\n>>> ");
+
+    while ((c = getchar()) != '\n' && c != EOF)
+    {
+        switch (c)
+        {
+        case '1':
+            printf("Digite o novo nome para [%s].\n");
+            break;
+        
+        default:
+            break;
+        }
+    }
+    
+
     return 0;
 }

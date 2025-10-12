@@ -4,6 +4,7 @@
 #include <stdlib.h>
 
 #define pulalinha printf("\n");
+// sql injection está valendo. Pode hackear. (Vou fazer uma versão segura depois)
 
 int listcallback(void * data, int argc, char ** argv, char ** azColName)
 {
@@ -28,7 +29,8 @@ int listcallback(void * data, int argc, char ** argv, char ** azColName)
 
 int updatecallback(void * data, int argc, char ** argv, char ** azColName)
 {
-    data->nome = argv[0];
+    char * nome_update = (char *)data;
+    strcpy(nome_update, argv[1]);
     return 0;
 }
 
@@ -45,20 +47,10 @@ int main(int argc, char const *argv[])
 
     sqlite3_exec(db, "CREATE Table IF NOT EXISTS clientes("
             "id integer primary key,"
-            "nome text not null,"
+            "nomeatual text not null,"
             "cpf text not null);", NULL, 0, NULL);
 
     menu(db);
-
-
-
-
-
-
-
-
-
-
 
     if (db != NULL)
     {
@@ -100,7 +92,7 @@ int menu(sqlite3 * db)
     
     while (1)
     {
-        printf("Selecione...\n\t\t\t [A]dd  [L]ist  [D]elete  [Q]uite\n>>>");
+        printf("Selecione...\n\t\t\t [A]dd  [L]ist  [D]elete  [U]pdate  [Q]uite\n>>>");
         if ((choice = getchar()) != '\n' && choice != EOF)
         {
             switch (choice)
@@ -125,6 +117,11 @@ int menu(sqlite3 * db)
                 system("clear");
                 delete(db);
                 break;
+
+            case 'u':
+            case 'U':
+                system("clear");
+                update(db);
             
             default:
                 break;
@@ -139,19 +136,19 @@ int menu(sqlite3 * db)
 
 int add(sqlite3 * db)
 {
-    char nome[50];
+    char nomeatual[50];
     char cpf[11];
     char sql[256];
     int c;
 
-    printf("Digite o nome do cliente\n>>> ");
+    printf("Digite o nomeatual do cliente\n>>> ");
 
     // limpar o buffer do stdin
     if ((c = getchar()) != 'n' && c != EOF);
 
 
-    fgets(nome,sizeof(nome), stdin);
-    nome[strcspn(nome, "\n")] = '\0';
+    fgets(nomeatual,sizeof(nomeatual), stdin);
+    nomeatual[strcspn(nomeatual, "\n")] = '\0';
     pulalinha
 
     printf("Digite o cpf do cliente\n>>> ");
@@ -159,7 +156,7 @@ int add(sqlite3 * db)
     fgets(cpf, sizeof(cpf), stdin);
     cpf[strcspn(cpf, "\n")] = '\0';
 
-    snprintf(sql, sizeof(sql), "insert into clientes (id, nome, cpf) values (null, '%s', '%s');", nome, cpf);
+    snprintf(sql, sizeof(sql), "insert into clientes (id, nome, cpf) values (null, '%s', '%s');", nomeatual, cpf);
 
     sqlite3_exec(db, sql, NULL, 0, NULL);
 
@@ -211,38 +208,70 @@ int delete(sqlite3 * db)
 
 int update(sqlite3 * db)
 {
-    struct Nome
-    {
-        char * nome;
-    };
-    
-    struct Nome nome;
-
-    char c;
-    printf("Digite o cpf do cliente que deseja modificar.\n\n>>>");
+    char nomeatual[100];
+    char nomenovo[100];
+    char cpfnovo[11];
 
     char cpf[11];
     char sql[256];
+    char sqlAux[256];
+
+    char c;
+    printf("Digite o cpf do cliente que deseja modificar.\n\n>>>");
 
     while((c = getchar()) != '\n' && c != EOF);
     fgets(cpf, sizeof(cpf), stdin);
     cpf[strcspn(cpf, "\n")] = '\0';
 
+    snprintf(sqlAux, sizeof(sqlAux),"select * from clientes where cpf='%s';",cpf);
+
+    sqlite3_exec(db, sqlAux, updatecallback, &nomeatual, NULL);
+
     printf("Qual campo você deseja modificar?\n[1] Nome\t[2] CPF\t [3] Cancelar\n\n>>> ");
 
+    while((c = getchar()) != '\n' && c != EOF);
     while ((c = getchar()) != '\n' && c != EOF)
     {
         switch (c)
         {
-        case '1':
-            printf("Digite o novo nome para [%s].\n");
+        case '2':
+            printf("Digite o novo cpf para [%s].\n>>> ", nomeatual);
+            while((c = getchar()) != '\n' && c != EOF);
+            fgets(cpfnovo,sizeof(cpfnovo), stdin);
+            cpfnovo[strcspn(cpfnovo, "\n")] = '\0';
+            snprintf(sql, sizeof(sql), "update clientes set cpf='%s' where cpf='%s';", cpfnovo, cpf);
+            sqlite3_exec(db, sql, NULL, 0, NULL);
+
+            if (sqlite3_changes(db) == 0)
+            {
+                printf("Nenhuma operacao foi excutada. Verifique se o cpf digitado esta correto.\n");
+                break;
+            }
+
+            printf("CPF alterado com sucesso.");
+
             break;
-        
+        case '1':
+            printf("Digite o novo nome para [%s].\n>>> ", nomeatual);
+            while((c = getchar()) != '\n' && c != EOF);
+            fgets(nomenovo, sizeof(nomenovo), stdin);
+            nomenovo[strcspn(nomenovo, "\n")] = '\0';
+            snprintf(sql, sizeof(sql), "update clientes set nome='%s' where cpf='%s';", nomenovo, cpf);
+            sqlite3_exec(db, sql, NULL, 0, NULL);
+
+            if (sqlite3_changes(db) == 0)
+            {
+                printf("Nenhuma operacao foi excutada. Verifique se o cpf digitado esta correto.\n");
+                break;
+            }
+
+            printf("Nome alterado com sucesso.");
+            break;
+
         default:
             break;
         }
-    }
-    
+    }    
 
     return 0;
 }

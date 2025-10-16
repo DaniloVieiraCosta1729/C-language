@@ -21,13 +21,16 @@ int main(int argc, char const *argv[])
 
     int cfd = accept(sfd, 0, 0);
 
-    char buffer[100];
+    char buffer[1000];
 
     recv(cfd, buffer, sizeof(buffer), 0);
 
-    buffer[99] = '\0';
+    buffer[999] = '\0';
 
     printf("Mensagem recebida: %s", buffer);
+
+    close(sfd);
+    close(sfd);
     
     return 0;
 }

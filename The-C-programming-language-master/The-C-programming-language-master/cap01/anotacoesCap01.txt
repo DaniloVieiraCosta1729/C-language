@@ -1,0 +1,75 @@
+No exemplo do livro, a função main que deve mostrar "hello, world" não está acompanhada do tipo de retorno e também não retorna nada, isso não deve compilar (pelo menos não com o compilador gcc que estou usando). Eu testei e obtive um warning dizendo que o tipo de retorno é, por padrão, o 'int' (não informa precisamente se é um int 32 bits ou 16 bits).
+O compilador gerou um .exe mesmo sem escrever o retorno, mas eu não executei. Eu voltei ao código e reescrevi a função, mas com um retorno void e funcionou perfeitamente e sem alertas, porém, embora o executável tenha funcionado normalmente, o vs code afirma que ele falhou, provavelmente porque o padrão diz que ele deve retornar um int e que o retorno deve ser 0 para sucesso. 
+
+O livro afirma que programas em C consistem em variáveis e funções. 
+Funções possuem "statements" que determinam as operações que devem ser feitas.
+Variáveis guardam valores usados durante a computação. Com base em outras fontes, variáveis possuem três componentes principais que as definem: tipo de dado; valor; nome. Esses três valores são o suficiente para que um programador consiga defini-las. Onde elas são armazenas ainda é um mistério, mas logo eu vou entender melhor sobre onde e como elas são armazenadas e quem armazena elas.
+
+Temos liberdade para nomear funções, porém, a função main é uma função especial, e o compilador vai considera-la como um ponto de partida para o programa que estamos escrevendo. 
+Outras funções normalmente servem como auxiliares para a função main, ou seja, a main, assim como qualquer outra função, pode chamar outras funções. 
+
+No início do programa escrevemos "#include <stdio.h>". Essa linha diz ao compilador para adicionar as informações do arquivo stdio.h no programa que estamos escrevendo. O nome stdio pode ser visto como uma abreviação para standard input output, ou seja, um arquivo padrão que nos dá recursos para trabalhar com input e output. Ainda não sei se esse i/o abrange manipulação de arquivos do sistema, como escrever, ler, criar e deletar arquivos ou se lida apenas com input e output do usuário. Em breve saberemos. 
+A extensão .h é usada para arquivos header como o stdio.h. Podemos também criar um arquivo como esse para modular o nosso código.
+
+O livro diz, explicitamente, que todos os programas em C devem ter uma função main. Isso é curioso, porque eu ACHO que em C# é possível alterar o início do programa, então imagino que deve existir uma forma de fazer isso em C também, não que exista alguma necessidade de fazer algo assim...
+
+---------------------------------------------------------------------------------
+
+Se queremos usar o console para ver mensagens com o printf, é uma boa ideia usar o caractere de nova linha \n, pois o printf não adiciona uma nova linha quando é chamado, fazendo com que todas as chamadas prinft, e de input também, fiquem aglutinadas em uma única linha.
+
+Existem vários caracteres "invisíveis" além do \n, um exemplo é o \" para ". 
+
+---------------------------------------------------------------------------------
+
+Exercício
+
+Para as temperaturas de 20 até 300 °F (de 20 em 20), contruir uma tabela que mostre o valor em °C correspondente a cada uma das temperaturas.
+
+Sobre a solução:  vou fazer duas soluções, uma seguindo, mais ou menos, o livro e outra de forma recursiva. Vou implementar também uma função para formatar a tabela.
+
+Percebi que C é muito sensível a ordem como fazemos as contas. Provavelmente isso ocorre porque quando uma divisão fica muito próxima de zero, ele trunca o resultado para 0. O estranho é que eu usei o tipo float para evitar esse problema, mas mesmo assim, não pude fazer o exercício com a expressão C = (5/9) * (F - 32), apenas com 5*(F - 32)/9, que são matematicamente equivalentes, mas a ordem seguida pelo compilador, aparentemente é diferente para as duas expressões.
+
+Porém, ambas as abordagens foram bem sucedidas (com for e recursivamente). O livro resolve com while.
+
+Descobri que mesmo declarando C como float, eu devo usar a fração 5.0/9.0 (pelo menos um deles deve ser escrito explicitamente como ponto flutuante) ao invés de 5/9. Por isso o compilador estava truncando para 0. Quando escrevi 5/9, ele primeiro fez a operação entre inteiros e depois converteu o resultado para float. 
+
+Melhorando a exibição: podemos usar %.2f para especificar que queremos mostras apenas 2 casas decimais.
+
+---------------------------------------------------------------------------------
+
+No exercício sobre conversão de temperaturas, usamos números arbitrários para o step (rate), inital e final. Isso afeta a leitura do código no futuro, pois não temos garantia de que lembraremos porquê tais números foram usados. Isso é ainda mais grave se outras pessoas precisarem ler/refatorar o código.
+Para resolver esse problema, temos um recurso chamado #define. Com o #define podemos nomear dados importantes, assim como fazemos com variáveis. 
+O uso de #define não é restrito à números, mas é uma aplicação muito comum usarmos ele para definir constantes no código. 
+
+---------------------------------------------------------------------------------
+
+Stream
+
+Segundo o livro, programas de modo geral podem ser vistos como casos expandidos de pequenos programa que serão tratados na seção 1.5. 
+Esses pequenos programas se baseam em input/output de caracteres usando o cabeçalho stdio.h.
+
+Na programação e computação de modo geral, o conceito de stream (transmissão ou fluxo) ajuda a abstratir a transmissão de dados. Tanto o input quanto o output, independenmente de onde vêm ou pra onde vai (contextos diversos: conexão TCP, uma leitura de arquivo etc.) é lidada em C (no caso do stdio.h) como um stream de caractéres. 
+Um stream de texto é uma sequência de caracteres em linhas, em que uma linha possuí zero ou mais caracteres e, se a linha não for a última, ela tem um caractere de nova linha no fim.
+
+Existem várias funções que permitem ler e escrever caracteres, mas as mais simples são o getchar e putchar que, respectivamente, lê o próximo caractere e exibe o caractere.
+
+Ao fazer um programa que pede caracteres sucessivamente e, ao receber EOF, retorna o número de caracteres digitados, houveram 2 problemas:
+1º - printf final não estava mostrando a mensagem por completo. 
+2º - o contador de caracteres estava com o valor dobrado.
+
+Para ambos os problemas, a raiz consiste no buffer. Buffer, aparentemente é uma região da memória em que o OS guarda os dados de input e output. Então, quando eu digito algo e aperto enter, isso não é levado imediatamente ao programa, mas sim ao buffer stdin e de lá ele será enviado ao programa. Quando eu digito 'x' e aperto enter, eu estou enviando dois caracteres, o 'x' e o '\n', o programa leu ambos no buffer e contabilizou ambos. Para resolver, bastou colocar uma condição antes da contagem para ignorar entradas de '\n'.
+Já no primeiro problema, acontece que eu estava enviando o EOF a partir do encerramento do programa, i.e, com ctrl+c. Isso fazia com que os dados no buffer stdout não conseguissem chegar a tempo no programa. A solução foi enviar o EOF com ctrl+z + enter, pois isso envia o EOF e não encerra o programa, permitindo o fluxo normal de dados do buffer para o programa.
+
+Com um artigo do geeksforgeeks + livro + gpt eu acredito que consegui enter bem o que o livro quis passar com esse exercício. 
+Quando um dado, como uma mensagem, não está pronta ainda para ser transferida, ela fica em um buffer, por exemplo, suponha que queremos colocar a palavra "moto" como input: se não tivessemos um buffer, ao pressionar o 'm' ele automaticamente seria entendido como a mensagem à ser enviada. O que o buffer faz é guardar os caracteres até que a mensagem esteja pronta para ser enviada. Assim, ele guardará 'm' 'o' 't' 'o' '\n'. O '\n' indica que a linha terminou e que, portando, a mensagem está pronta para ser enviada.
+
+---------------------------------------------------------------------------------
+
+Funções em C, por padrão, não alteram o valor das variáveis que são passadas como argumento, ou seja, as variáveis são passadas por valor e não por referência. 
+
+Se quisermos passar um parâmetro por referência, devemos fornecer o ponteiro para o endereço da variável que queremos passar por referência, ao invés de passar o nome da variável. Além disso, a assinatura do método deve informar que o parâmetro é um ponteiro.
+
+Uma observação importante é que arrays são sempre passados por referência. Quando colocamos o nome de um array na chamada de uma função, o que a função realmente pega é o endereço do início do array. (fazendo uma pesquisa, descobri que o termo 'passagem por referência' não é tecnicamento correto, pois não estamos passando o próprio array, mas sim, um ponteiro para o primeiro elemento. O efeito é muito semelhante, mas são coisas distinstas mesmo assim.)
+
+
+

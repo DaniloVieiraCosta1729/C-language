@@ -34,37 +34,37 @@ int main(int argc, char const *argv[])
 
     while (1)
     {
-        char input[5000];
+    char input[5000];
 
-        if (recv(cFD, input, sizeof(input), 0) == -1)
-        {
-            perror("recv");
+    if (recv(cFD, input, sizeof(input), 0) == -1)
+    {
+        perror("recv");
 
-            return 1;
-        }
-        
+        return 1;
+    }
+    
 
-        printf("%s\n\n", input);
-        
-        char * requisicao = input + 5;
+    printf("%s\n\n", input);
+    
+    char * requisicao = input + 5;
 
-        requisicao[strcspn(requisicao, " ")] = '\0';
+    requisicao[strcspn(requisicao, " ")] = '\0';
 
-        int htmlFD = open(requisicao, O_RDONLY);
+    int htmlFD = open(requisicao, O_RDONLY);
 
-        struct stat s;
+    struct stat s;
 
-        fstat(htmlFD, &s);
+    fstat(htmlFD, &s);
 
-        char cabecalho[256];
+    char cabecalho[256];
 
-        sprintf(cabecalho, "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: %ld\r\n\r\n", s.st_size);
+    sprintf(cabecalho, "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: %ld\r\n\r\n", s.st_size);
 
-        printf("%s\n", input);
+    printf("%s\n", input);
 
-        send(cFD, cabecalho, strlen(cabecalho), 0);
+    send(cFD, cabecalho, strlen(cabecalho), 0);
 
-        sendfile(cFD, htmlFD, 0, s.st_size);
+    sendfile(cFD, htmlFD, 0, s.st_size);
 
     }
     

@@ -1,1 +1,2 @@
-Coleção de arquivos gerados durante o estudo do livro "The C programming language".
+Coleção de arquivos gerados durante o estudo de C.
+

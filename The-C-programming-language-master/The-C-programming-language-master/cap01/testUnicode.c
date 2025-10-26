@@ -1,1 +1,0 @@
-// Vou criar um array de inteiros e pedir para o compilador interpretar como uma um array de wide char.

@@ -35,8 +35,24 @@
     <title>Front-end GUI</title>
 </head>
 <body class="container">
-    <div class="output">
+    <div id="botao" class="output">
         <p>Testing the output...</p>
     </div>
 </body>
+<script>
+    document.getElementById("botao").addEventListener(
+        'click', () => {
+            alert("clicado!");
+            fetch('http://www.localhost:8080',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    },
+                    body: 'fala, amigo'
+                }
+            ).then(retorno => retorno.text()).then(data => console.log('resposta: ' + data));
+        }
+    );
+</script>
 </html>

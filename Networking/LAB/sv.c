@@ -25,6 +25,7 @@ Existe uma certa variedade de opções para ler e escrever.
 #include <sys/stat.h>
 #include <sys/sendfile.h>
 
+
 #define BUFFER_SIZE 1024
 
 int main(int argc, char const *argv[])
@@ -70,6 +71,12 @@ int main(int argc, char const *argv[])
 
     int pagefd = open(req, O_RDONLY); // legal, a flag aqui é um dos usos que o OS faz do bitmask.
 
+    if (pagefd == -1)
+    {
+        printf("FALHOU. Não conseguiu abrir o html.");
+    }
+    
+
     // Aqui vamos precisar fazer algum trabalho para conseguir enviar o html para o browser.
     /*
     Para que o browser aceite o html que enviaremos com sendfile(), precisamos antes enviar uma mensagem com send. Tal mensagem é o cabeçalho HTTP dizendo o que queremos fazer. Basicamente, serão 3 linhas:
@@ -82,10 +89,32 @@ int main(int argc, char const *argv[])
     fstat(pagefd, &page);
 
     char cabecalho[256];
-    sprintf(cabecalho, "HTTP 1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: %ld\r\n\r\n", page.st_size);
+    sprintf(cabecalho, "HTTP 1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: %ld\r\nConnection: close\r\n\r\n", page.st_size);
 
     send(cfd, cabecalho, strlen(cabecalho), 0);
     sendfile(cfd, pagefd, 0, page.st_size);
+
+    while (1)
+    {
+        close(cfd);
+        if ((cfd = accept(sfd, (struct sockaddr*)&addrC, (socklen_t*)&addrlen)) < 0)
+        {
+            perror("accept");
+            break;
+        }
+        char mensagem[1000];
+
+        int qtdBytes = recv(cfd, mensagem, sizeof(mensagem)-1, 0);
+
+        if(qtdBytes > 0)
+        {
+            mensagem[qtdBytes] = '\0';
+        }
+
+        char *body = strstr(mensagem, "\r\n\r\n");
+        body += 4;
+        printf(">>>\t%s\n", body);
+    }
 
     close(cfd);
     close(pagefd);

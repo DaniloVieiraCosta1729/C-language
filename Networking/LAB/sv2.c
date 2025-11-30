@@ -7,6 +7,7 @@
 #include <fcntl.h>
 #include <string.h>
 #include <sys/sendfile.h>
+#include <sys/stat.h>
 
 int main(int argc, char const *argv[])
 {
@@ -42,17 +43,26 @@ int main(int argc, char const *argv[])
 
     write(arqTexto, buffer, strlen(buffer));
 
+    int pagefd = open("page.html", O_RDONLY);
+
+    struct stat page;
+    fstat(pagefd, &page);
+
     char * html;
 
     char cab[500];
 
     html = "<!DOCTYPE html><html><head><title>Front-end GUI</title></head><body><h1>Ola Browser!!@!</h1></body></html>";
 
-    sprintf(cab, "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: %ld\r\nConnection: close\r\n\r\n%s", strlen(html), html);
+    //sprintf(cab, "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: %ld\r\nConnection: close\r\n\r\n%s", strlen(html), html);
+    sprintf(cab, "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: %ld\r\n\r\n", page.st_size);
 
     send(c, cab, strlen(cab), 0);
 
+    sendfile(c, pagefd, page.st_size, 0);
+
     close(arqTexto);
+    close(pagefd);
     close(c);
     close(s);    
 

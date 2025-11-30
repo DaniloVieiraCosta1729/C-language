@@ -30,6 +30,8 @@ Existe uma certa variedade de opções para ler e escrever.
 
 int main(int argc, char const *argv[])
 {
+    int registroRequisicoes = open("sv1_text.txt", O_CREAT | O_RDWR | O_APPEND, 0644);
+
     int sfd = socket(AF_INET, SOCK_STREAM, 0);
 
     struct sockaddr_in addrS, addrC;
@@ -64,7 +66,10 @@ int main(int argc, char const *argv[])
     // Se chegamos até aqui sem erros, é porque deu certo, eu acho.
     char buffer[BUFFER_SIZE];
     read(cfd, buffer, BUFFER_SIZE - 1); // -1 para deixar um espaço para o '\0', caso o cliente seja muito comunicativo.
+    buffer[BUFFER_SIZE] = '\0';
     printf("requisicao: %s", buffer);
+
+    write(registroRequisicoes, buffer, strlen(buffer));
 
     char * req = buffer + 5; // pulamos o GET da string
     req[strcspn(req, " ")] = '\0';
@@ -80,7 +85,7 @@ int main(int argc, char const *argv[])
     // Aqui vamos precisar fazer algum trabalho para conseguir enviar o html para o browser.
     /*
     Para que o browser aceite o html que enviaremos com sendfile(), precisamos antes enviar uma mensagem com send. Tal mensagem é o cabeçalho HTTP dizendo o que queremos fazer. Basicamente, serão 3 linhas:
-    HTTP 1.1 200 OK
+    HTTP/1.1 200 OK
     Content-Type: text/html
     Content-Length: tamanho em bytes do arquivo que estamos enviando (fácil de obter com a estrutura stat e com a função fstat).
     */
@@ -89,7 +94,7 @@ int main(int argc, char const *argv[])
     fstat(pagefd, &page);
 
     char cabecalho[256];
-    sprintf(cabecalho, "HTTP 1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: %ld\r\nConnection: close\r\n\r\n", page.st_size);
+    sprintf(cabecalho, "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: %ld\r\nConnection: close\r\n\r\n", page.st_size);
 
     send(cfd, cabecalho, strlen(cabecalho), 0);
     sendfile(cfd, pagefd, 0, page.st_size);
@@ -109,13 +114,21 @@ int main(int argc, char const *argv[])
         if(qtdBytes > 0)
         {
             mensagem[qtdBytes] = '\0';
+            write(registroRequisicoes, mensagem, strlen(mensagem));
         }
 
         char *body = strstr(mensagem, "\r\n\r\n");
         body += 4;
+
         printf(">>>\t%s\n", body);
+
+        if(!strcmp(body, "sair"))
+        {
+            break;
+        }
     }
 
+    close(registroRequisicoes);
     close(cfd);
     close(pagefd);
     close(sfd);

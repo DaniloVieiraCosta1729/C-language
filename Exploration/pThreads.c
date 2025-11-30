@@ -1,6 +1,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <pthread.h>
+#include <sched.h>
 
 void * myturn(void * p);
 void yourturn();
@@ -27,7 +28,7 @@ void * myturn(void * p)
     while (c < 20)
     {
         sleep(1);
-        printf("My turn.\n%d secs\n", c);
+        printf("My turn.\n%d secs\t\t\t CPU: %d\n", c, sched_getcpu());
         c++;
     }
 
@@ -41,7 +42,7 @@ void yourturn()
     while (c < 10)
     {
         sleep(1);
-        printf("Your turn. \n%d secs\n", c);
+        printf("Your turn. \n%d secs\t\t\t CPU: %d\n", c, sched_getcpu());
         c++;
     }  
 }

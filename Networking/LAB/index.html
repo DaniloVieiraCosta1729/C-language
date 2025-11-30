@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <link href='https://fonts.googleapis.com/css?family=Roboto&display=swap' rel='stylesheet'>
+
     <style>
         .output{
             display: flex;
@@ -30,11 +32,32 @@
             left: 50%;
             transform: translate(-50%, -50%);
         }
+
+        .sair{
+            text-decoration: none;
+            font-family: roboto, sans-serif;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            background-color: red;
+            border-radius: 1vh;
+            padding: 2vh;
+            width: fit-content;
+            color: black;
+            font-weight: bolder;            
+        }
+
+        .sair:hover{
+            background-color: white;
+            border-color: yellow;
+            border-style: solid;
+        }
     </style>
 
     <title>Front-end GUI</title>
 </head>
 <body class="container">
+    <a href="#" class="sair" id="sair">End Communication</a>
     <div id="botao" class="output">
         <p>Testing the output...</p>
     </div>
@@ -50,6 +73,20 @@
                         'Content-Type': 'text/plain'
                     },
                     body: 'fala, amigo'
+                }
+            ).then(retorno => retorno.text()).then(data => console.log('resposta: ' + data));
+        }
+    );
+    document.getElementById("sair").addEventListener(
+        'click', () => {
+            alert("<<CONEXÃO ENCERRADA>>");
+            fetch('http://www.localhost:8080',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    },
+                    body: 'sair'
                 }
             ).then(retorno => retorno.text()).then(data => console.log('resposta: ' + data));
         }

@@ -106,12 +106,6 @@ int publisher(subscribers * eventSubList)
 {
     node * observer;
 
-    if (observer == NULL)
-    {
-        printf("Error on trying to allocate memory for the iterator.\n");
-        return 0;
-    }    
-
     observer = eventSubList->head->next;
 
     while (observer->exec == FUNC_TYPE)
@@ -147,6 +141,41 @@ subscribers * eventListInitializer()
     
 }
 
+// I know that a linked list isn't a good data structure for searching, but since the functions are called synchronously and because of that, I'm not expecting to have long lists, I think it's fine for now to implement the unsubscriber's function searching on a linked list.
+void unsubscribe(subscribers * eventSubList, void (* func)())
+{
+    node * liberameFH = eventSubList->head;
+    node * freeMe;
+
+    if (liberameFH->next->exec == TAIL_TYPE)
+    {
+        printf("This function is not observing this event.\n");
+        return;
+    }
+
+    do
+    {
+        liberameFH = liberameFH->next;
+        
+        if ((liberameFH->next->func) == func)
+        {
+            freeMe = liberameFH->next;
+
+            liberameFH->next = liberameFH->next->next;
+
+            free(freeMe);
+            printf("Done!\n");
+            return;
+        }
+        
+    } while ((liberameFH->func != func) || (liberameFH->exec != TAIL_TYPE));
+    
+    printf("This function is not a sub of this event.\n");
+
+    return;
+
+}
+
 int main(int argc, char const *argv[])
 {    
     event_t eventCreate;
@@ -156,6 +185,10 @@ int main(int argc, char const *argv[])
     subscribeNOW(eventCreate.eventSubs, nosy);
     subscribeNOW(eventCreate.eventSubs, xereta);
     subscribeNOW(eventCreate.eventSubs, intrometido);
+
+    callEvent(&eventCreate);
+
+    unsubscribe(eventCreate.eventSubs, xereta);
 
     callEvent(&eventCreate);
 
